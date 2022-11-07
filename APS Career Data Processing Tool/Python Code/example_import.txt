@@ -1,0 +1,3 @@
+job,test,123,
+new,line,
+and+or,and|or
