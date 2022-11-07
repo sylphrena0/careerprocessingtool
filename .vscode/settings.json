@@ -1,5 +1,7 @@
 {
     "cSpell.ignoreWords": [
-        "nltk"
+        "insertbackground",
+        "nltk",
+        "stopwords"
     ]
 }
