@@ -7,7 +7,7 @@
 ##  APS Career Data Processing Tool v1.1.pyw -- written by Sylphrena Kleinsasser
 ##  Note: For your sanity, I highly recommend revising this code using Microsoft Visual Studio Code, not idle or N++. Use what you will to package this, but I recommend pyinstaller and a tool like AdvancedInstaller
 ################################################################################################
-import pandas as pd #spreadsheet managment tool to allow us to import .csv files easily
+import pandas as pd #spreadsheet management tool to allow us to import .csv files easily
 import PySimpleGUI as sg #used to build the GUI
 import re #imports regex for data validation and search function.
 import nltk #used to classify word types
@@ -17,7 +17,7 @@ from PIL import Image, ImageDraw #for checkboxes in GUI
 from os import path #allows us to check if a file exists
 from time import sleep #allows us to pause script for a time. Too bad it doesn't let me sleep irl
 from collections import Counter #required for any semblance of speed in keyword counting
-from datetime import datetime #needed to autoname exported files
+from datetime import datetime #needed to auto name exported files
 
 ################################################
 ## Theme Settings:
@@ -41,7 +41,7 @@ def menuModule(): #this is the function that creates the first window (main menu
                 [sg.Button("Import Data"),sg.Button("Analyze Data"),sg.Button("Cancel")] #adds buttons
               ]
 
-    #defines and opens window using defined layout. First element is window title. Finalize is used pretty much everywhere as it allows us to edit the window after defination (we use this for max size, changing text, and a bunch of other things). Size is W x H:
+    #defines and opens window using defined layout. First element is window title. Finalize is used pretty much everywhere as it allows us to edit the window after definition (we use this for max size, changing text, and a bunch of other things). Size is W x H:
     window = sg.Window("APS Career Data Processing Tool", layout, element_justification='c', finalize=True, resizable=True, icon='logo.ico', size=(500,420)) 
     window.set_min_size((350,390)) #sets minimum window size. Prevents cutoff of important elements
 
@@ -89,7 +89,7 @@ def importModule(): #function that creates import window and calls job import fu
             window['text'].update("Import data, using " + fileName)  #updates text
             window.refresh() #this is super important. Text will not update without a refresh
         elif event == "File Input": #calls our file input popup to ask user for custom filename
-            fileName = sg.popup_get_file('', no_window=True,file_types=(("Comma Seperated Files", "*.csv"),)) #simplified way to get file, using native file popup. Much better for installations
+            fileName = sg.popup_get_file('', no_window=True,file_types=(("Comma Separated Files", "*.csv"),)) #simplified way to get file, using native file popup. Much better for installations
             if not(path.exists(fileName)): #checks that file exists. Prevents bugs that might pass the dialog
                 notify("Error: File not found! Ensure the file is in this directory.")
             else:  #runs code if validation passes
@@ -130,14 +130,14 @@ def analyzeWindowModule(): #function that creates analyze window that calls anal
                     result.to_csv(name, index=False) #uses a pandas method to export data to csv file
                     notify("Data is exported!",title="Success")
                 except: #handles errors
-                    notify("Fatal Error: Invalid export location. Check your path and ensure that you are not attemping to overwrite a file that is in use.")
+                    notify("Fatal Error: Invalid export location. Check your path and ensure that you are not attempting to overwrite a file that is in use.")
 
     sg.SetOptions(element_padding=(15, 15))
 
     #I use size=(60,None) to allow me to force text to rollover if it is longer than the first value specified. Best if used with justification='center' (for the element settings) AND element_justification='c' (window settings):
     layout = [
                 [sg.Image('logo.png')],
-                [sg.Text("You may import search terms directly, via a comma seperated .txt file,\nor use the search module",justification='center',size=(60,None))], #\n in a string makes a new line
+                [sg.Text("You may import search terms directly, via a comma separated .txt file,\nor use the search module",justification='center',size=(60,None))], #\n in a string makes a new line
                 [sg.Button("Direct Input"),sg.Button("File Input"),sg.Button("Search Module")],
                 [sg.Button("Main Menu"),sg.Button("Cancel")]
               ]
@@ -234,7 +234,7 @@ def filePopup(msg="Please include file extension. The file must be in this direc
 def keywordsPopup(): #prompts user for keywords
     sg.SetOptions(element_padding=(15, 10))
     layout = [
-                [sg.Text("Enter your keywords below, seperated by commas.\n\nYou may use \"|\" for OR and \"+\" for AND. You may use \"_\" wildcards for single characters, \"%\" for zero or more characters.",justification='center',size=(40,None))],
+                [sg.Text("Enter your keywords below, separated by commas.\n\nYou may use \"|\" for OR and \"+\" for AND. You may use \"_\" wildcards for single characters, \"%\" for zero or more characters.",justification='center',size=(40,None))],
                 [sg.Multiline(default_text="Enter keywords",size=(30, 5), autoscroll=True, key='keywords',no_scrollbar=True)],
                 [sg.Button("OK"),sg.Button("Cancel")]
               ]
@@ -315,7 +315,7 @@ def results(df): #this shows search results and returns True if user wishes to e
 ################################################
 ## Job Import Function:
 ################################################
-def importFunction(file): #imports job data from specifed .csv file
+def importFunction(file): #imports job data from specified .csv file
     jobData = pd.read_csv(file,index_col=False) #imports data to variable for later use using pandas
 
     ################################################
@@ -391,18 +391,18 @@ def importFunction(file): #imports job data from specifed .csv file
 ## Keyword Counter Module:
 ################################################
 def getdesc(sector,perm,level,degree,state,startdate="",enddate=""): #gets all job descriptions as a string
-    #convert from text temporary/permenant to boolan 1s and 0s:
+    #convert from text temporary/permanent to boolean 1s and 0s:
     if perm == "Temporary": 
         perm = 1
     elif perm == "Permanent":
         perm = 0
-    else: #we use permance as a base to build the sql query. For simplcity, we always have this conditioon and just put an sql wildcard so it will not filter if a permanence filter is not selected
+    else: #we use permanence as a base to build the sql query. For simplicity, we always have this condition and just put an sql wildcard so it will not filter if a permanence filter is not selected
         perm = "%"
     
     try:
         conn = sqlite3.connect('APSdata.db') #connects to database. Creates database if it does not exist
         cursor = conn.cursor() #defines the cursor used to execute commands
-        sql = "SELECT fDescription FROM Jobs WHERE (Temporary LIKE '%{}%')".format(perm) #we need a starting condition to build the query or we have a chance of building a nonense query, so this condition will always exist
+        sql = "SELECT fDescription FROM Jobs WHERE (Temporary LIKE '%{}%')".format(perm) #we need a starting condition to build the query or we have a chance of building a nonsense query, so this condition will always exist
 
         if sector != "Sector Filter": #adds sector condition, if a condition is selected ("Sector Filter" is the default value, the var "sector" will contain the sector when the filter was selected)
             sql += " AND (Sector LIKE '%{}%')".format(sector) #the .format() method is way faster and easier pathway to insert our sector variable than python concatenation. The += operand appends this condition on our already defined sql query
@@ -412,13 +412,13 @@ def getdesc(sector,perm,level,degree,state,startdate="",enddate=""): #gets all j
             sql += " AND (JobLevel LIKE '%{}%')".format(level)
         if state != "State Filter": #adds state condition if selected
             sql += " AND (StateName LIKE '%{}%')".format(state)
-        #if startdate != "": #this enables adding date conditions. Disabled due to issues with formating of inputed data. You need to enable in other places as well
+        #if startdate != "": #this enables adding date conditions. Disabled due to issues with formatting of inputted data. You need to enable in other places as well
         #    sql += " AND (DateTimePosted >= datetime('{}'))".format(startdate)
         #if enddate != "":
         #    sql += " AND (DateTimePosted <= datetime('{}'))".format(enddate)
 
         cursor.execute(sql) #executes the query
-        strResult = str(cursor.fetchall()).strip('[]') #query returns a list of tuples. Strip extacts our results and str() turn it into a string
+        strResult = str(cursor.fetchall()).strip('[]') #query returns a list of tuples. Strip extracts our results and str() turn it into a string
         return strResult #returns our result
     except:
         notify("Critical error while connecting to MySQL\nto get job descriptions.")
@@ -437,7 +437,7 @@ def topTerms(searchText, minhits=1000, wordtype="J"): #module that counts words 
             print("Selecting desired types of words") #keep in mind that print commands will only appear in visual code consoles, not when run as a .pyw or .exe file. This is mostly for our sake and debugging
             wordlist = [word.lower() for (word, pos) in nltk.pos_tag(nltk.word_tokenize(text)) if pos[0] == 'J']  #selects specfied type of word using nltk language processing, then removes case
         else:
-            print("Removing punction from job descriptions")
+            print("Removing punctuation from job descriptions")
             text = re.sub('[^\w\s]','',text) #removes punctuation with regex
             print("Removing case from job descriptions")
             text = text.lower() #turn string to lowercase
@@ -449,9 +449,9 @@ def topTerms(searchText, minhits=1000, wordtype="J"): #module that counts words 
         print("Counting",len(wordlist),"words")
         counts = Counter()
         counts.update(wordlist) #counts words. Much much faster than the fastest manual code for this
-        wordlist = [[key,val] for key, val in counts.items()if not (isinstance(val, int) and (val < minhits))] #turns data into set of sets, limits results to specified amount of hits
+        wordlist = [[key, val] for key, val in counts.items() if not (isinstance(val, int) and (val < minhits))] #turns data into set of sets, limits results to specified amount of hits
         print("Sorting results")
-        wordlist = sorted(wordlist,key=lambda x: x[1]) #sorts list by frequency. Faster alterntives exist, but this is simpler
+        wordlist = sorted(wordlist,key=lambda x: x[1]) #sorts list by frequency. Faster alternatives exist, but this is simpler
         wordlist.reverse() #sets list to desc order
 
         return wordlist
@@ -471,17 +471,17 @@ def topTerms(searchText, minhits=1000, wordtype="J"): #module that counts words 
             png = output.getvalue()
         return png
 
-    check = [icon(0), icon(1), icon(2)] #adds allias to icon()
+    check = [icon(0), icon(1), icon(2)] #adds alias to icon()
 
     headings = ['Search Term', 'Hits'] #defines table (technically tree) headers
     data = count(searchText) #calls nested function to count words
 
-    treedata = sg.TreeData() #adds allias for sg.TreeData
+    treedata = sg.TreeData() #adds alias for sg.TreeData
     treemeta = [] #initialise treemeta list 
 
     for term, hits in data:
         treedata.Insert('', term, term, values=[hits], icon=check[1]) #gets data from counter and inserts data to table
-        treemeta.append(term) #fills intial metadata list
+        treemeta.append(term) #fills initial metadata list
 
     sg.SetOptions(element_padding=(15, 8))
     sg.set_options(font=('Helvetica', 12))
@@ -516,19 +516,19 @@ def topTerms(searchText, minhits=1000, wordtype="J"): #module that counts words 
             window.close()
             return tree.metadata #returns list of selected data
 
-def searchModule(): #asks for options. inerfaces with topTerms() and main menu 
+def searchModule(): #asks for options. interfaces with topTerms() and main menu 
     sg.SetOptions(element_padding=(5, 10))
     #combos are list boxes. We have them set to readonly (users cannot type custom content) and to use default value to describe the field to the user. Radios are more complicated, but I use one anyway for word type for visual appeal:
     layout = [
-                [sg.Text("Please select search module options. Note that degree requirements and job permance may require you to preprocess data, or you may be excluding date you wish to select.", key='msg',justification='center',size=(48,None))],
+                [sg.Text("Please select search module options. Note that degree requirements and job permanence may require you to preprocess data, or you may be excluding date you wish to select.", key='msg',justification='center',size=(48,None))],
                 [sg.Radio('All', "WORDTYPE", default=True,key="All",enable_events=True),sg.Radio('Verbs', "WORDTYPE",key="Verbs",enable_events=True),sg.Radio('Nouns', "WORDTYPE",key="Nouns",enable_events=True),sg.Radio('Adjectives', "WORDTYPE",key="Adjectives",enable_events=True)],
                 [sg.Combo(values=["Academic","Government and National Lab","Non-Profit","Private","Other"],default_value="Sector Filter", size=(25,30), key='sector',readonly=True,pad=(5, 10)),
-                sg.Combo(values=["Permanent","Temporary"],default_value="Permanance Filter", size=(25,30), key='perm',readonly=True,pad=(5, 10))],
+                sg.Combo(values=["Permanent","Temporary"],default_value="Permanence Filter", size=(25,30), key='perm',readonly=True,pad=(5, 10))],
                 [sg.Combo(values=["4 Year Degree","Masters","Doctorate"],default_value="Degree Requirement Filter", size=(25,30), key='degree',readonly=True,pad=(5, 10)),
                 sg.Combo(values=["Alaska", "Alabama", "Arkansas", "American Samoa", "Arizona", "California", "Colorado", "Connecticut", "District of Columbia", "Delaware", "Florida", "Georgia", "Guam", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Puerto Rico", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Virgin Islands", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"],default_value="State Filter", size=(25,30), key='state',readonly=True,pad=(5, 10))],
                 [sg.Combo(values=["Summer Research/Internship", "Entry Level", "Experienced"],default_value="Job Level Filter", size=(25,30), key='level',readonly=True,pad=(5, 10))],
 
-                #this enables inputing date conditions. Disabled due to issues with formating of inputed data. You'll need to enable some code in the while loop below and in getdesc() too!
+                #this enables inputting date conditions. Disabled due to issues with formatting of inputted data. You'll need to enable some code in the while loop below and in getdesc() too!
                 #[sg.Input(key='startdate', default_text="", size=(20,1), readonly=True, disabled_readonly_background_color="#111111", disabled_readonly_text_color="white"), sg.Input(key='enddate', default_text="", size=(20,1), readonly=True, disabled_readonly_background_color="#111111", disabled_readonly_text_color="white")],
                 #[sg.CalendarButton("Set Start Date", close_when_date_chosen=True,  target='startdate', no_titlebar=False, format='%Y-%m-%d 00:00:00'), sg.CalendarButton("Set End Date", close_when_date_chosen=True,  target='enddate', no_titlebar=False, format='%Y-%m-%d 23:59:59')],
                 
@@ -540,7 +540,7 @@ def searchModule(): #asks for options. inerfaces with topTerms() and main menu
     window = sg.Window("Select Options", layout, element_justification='c', finalize=True, resizable=False, icon='logo.ico')
     window['hits'].Widget.config(insertbackground='#b2aca2') #fixes the cursor color!
 
-    type = None #intilizes backend word type as None
+    type = None #initializes backend word type as None
 
     #create the event loop
     while True: #end program if user closes window or presses the Cancel button
@@ -582,7 +582,7 @@ def searchModule(): #asks for options. inerfaces with topTerms() and main menu
 ################################################
 ## Query Module:
 ################################################
-def query(searchTerms, search="fDescription", condition=""): #counts occurances of terms in specified list of terms (searchTerms) with specified sql condition, in specified search field ("search") using SQLite.
+def query(searchTerms, search="fDescription", condition=""): #counts occurrences of terms in specified list of terms (searchTerms) with specified sql condition, in specified search field ("search") using SQLite.
     try:
         conn = sqlite3.connect('APSdata.db') #connects to database. Creates database if it does not exist
         results = {} #initializes results dictionary 
@@ -590,7 +590,7 @@ def query(searchTerms, search="fDescription", condition=""): #counts occurances 
         for term in searchTerms: #iterates through the list of search terms
             cursor = conn.cursor() #defines the cursor used to execute commands
 
-            orgTerm = term #stores term before processing operation sytnax
+            orgTerm = term #stores term before processing operation syntax
             term = term.replace("|","%' OR {} LIKE '%".format(search)) #turn application OR syntax to SQLite syntax
             term = term.replace("+","%' AND {} LIKE '%".format(search)) #turn application AND syntax to SQLite syntax
             term = "'%{}%'".format(term) #adds general syntax for all terms
@@ -599,7 +599,7 @@ def query(searchTerms, search="fDescription", condition=""): #counts occurances 
             cursor.execute(sql) #executes the query
             #print(sql) #this line is super duper helpful for debugging SQL errors
 
-            term = orgTerm #reverts our term back to the orginal syntax for exporting results
+            term = orgTerm #reverts our term back to the original syntax for exporting results
             listResult = cursor.fetchall() #gets results from sql in a list of tuple (but there is only one element)
             tupleResult = listResult[0] #gets tuple from list
             results[term] = tupleResult[0] #gets string from tuple and adds results to dictionary
@@ -610,10 +610,10 @@ def query(searchTerms, search="fDescription", condition=""): #counts occurances 
         notify("Critical error while connecting to SQL.")
 
 def searchAll(keylist,search='fDescription'): #opens window to ask what which conditions to search with, then queries with query()
-    #to add more search groups, define the earch group at the bottom in the format exhibited and add a checkbox button + a call to grab results with the others
+    #to add more search groups, define the search group at the bottom in the format exhibited and add a checkbox button + a call to grab results with the others
     sg.SetOptions(element_padding=(5, 10))
     layout = [
-                [sg.Text("Please select your search parameters. Note that degree requirements and job permance may require you to preprocess data, or you may be excluding date you wish to select.", key='msg',justification='center',size=(48,None))],
+                [sg.Text("Please select your search parameters. Note that degree requirements and job permanence may require you to preprocess data, or you may be excluding date you wish to select.", key='msg',justification='center',size=(48,None))],
                 [sg.Text("Select search field:",pad=(0,15)),sg.Radio('Description', "query", default=True,key="desc",enable_events=True),sg.Radio('Job Title', "query",key="title",enable_events=True,pad=(0,15)),sg.Radio('Requirements', "query",key="req",enable_events=True)],                
                 [sg.Checkbox('Sector', default=True, key="sector"),sg.Checkbox('Permanence', default=False, key="perm"),sg.Checkbox('Degree Requirements', default=False, key="degree"),sg.Checkbox('Job Level', default=False, key="level")],
                 [sg.Button("OK",pad=(15, 10)),sg.Button("Cancel",pad=(15, 10))]
@@ -649,7 +649,7 @@ def searchAll(keylist,search='fDescription'): #opens window to ask what which co
             search = "Requirements"
         ################################################
 
-    allJobs = query(keylist,search) #our permenent query, of all jobs
+    allJobs = query(keylist,search) #our permanent query, of all jobs
     data = {'All Jobs': allJobs} #adds results to results dictionary
 
     ################################################
