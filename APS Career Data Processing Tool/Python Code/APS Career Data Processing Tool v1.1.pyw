@@ -5,7 +5,7 @@
 ##  ██   ██ ██      ███████     ██      ██   ██    ██    ███████ ██  ██████ ███████ 
 ##  
 ##  APS Career Data Processing Tool v1.1.pyw -- written by Sylphrena Kleinsasser
-##  Note: For your sanity, I highly recommend revising this code using Microsoft Visual Studio Code, not idle or N++. Use what you will to package this, but I recommend pyinstaller and a tool like AdvancedInstaller
+##  Note: For your sanity, I highly recommend revising this code using Microsoft Visual Studio Code, not idle or N++. Use what you will to package this, but I recommend PyInstaller and a tool like AdvancedInstaller
 ################################################################################################
 import pandas as pd #spreadsheet management tool to allow us to import .csv files easily
 import PySimpleGUI as sg #used to build the GUI
