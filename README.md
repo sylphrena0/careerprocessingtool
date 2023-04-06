@@ -24,7 +24,6 @@ This program imports and analyzes data from APS Job Board postings. It imports c
  - Fix GUI bugs.
  - Port documentation into markdown.
  - Add compiled apple versions.
- - Implement github releases, reorganize file structure.
  - Complete README.md with Project Structure section.
 
 <br>
