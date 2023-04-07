@@ -41,7 +41,7 @@ app.setWindowIcon(QIcon("logo.png")); #sets titlebar logo
 
 engine = QQmlApplicationEngine()
 engine.quit.connect(app.quit)
-engine.load('QtDesign.qml') #loads the gui config from the file
+engine.load('Source Code/QtDesign.qml') #loads the gui config from the file
 
 app.setProperty("home", Path.home()) 
 
