@@ -46,7 +46,7 @@ ApplicationWindow {
                 fillMode: Image.PreserveAspectFit
             }
             Text {
-                id: text1
+                id: mainText
                 x: -318
                 y: 237
                 width: 441
@@ -62,6 +62,7 @@ ApplicationWindow {
                 font.family: "Arial"
             }
 
+            //main menu buttons
             RowLayout {
                 id: mainMenuButtons
                 x: -221
@@ -114,7 +115,7 @@ ApplicationWindow {
                     }
                 }
             }
-
+            //import menu buttons
             RowLayout {
                 id: importButtons
                 x: -225
@@ -178,7 +179,7 @@ ApplicationWindow {
                     checkable: false
                 }
             }
-
+            //analyze menu buttons
             RowLayout {
                 id: analyzeButtons
                 x: -222
@@ -261,12 +262,14 @@ ApplicationWindow {
                 }
             }
         }
+
+        //the analyze & import "pages" are not actually pages, I just replace the text and switch the set of buttons that are visable with states
         states: [
             State {
                 name: "Import"
 
                 PropertyChanges {
-                    target: text1
+                    target: mainText
                     y: 252
                     width: 385
                     height: 42
@@ -284,11 +287,6 @@ ApplicationWindow {
                     visible: true
                 }
 
-                PropertyChanges {
-                    target: importBack
-                    text: qsTr("Back")
-                    flat: true
-                }
             },
             State {
                 name: "Analyze"
@@ -304,7 +302,7 @@ ApplicationWindow {
                 }
 
                 PropertyChanges {
-                    target: text1
+                    target: mainText
                     y: 229
                     width: 415
                     height: 66
