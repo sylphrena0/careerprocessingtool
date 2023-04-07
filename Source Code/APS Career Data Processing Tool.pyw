@@ -90,9 +90,7 @@ def importModule(): #function that creates import window and calls job import fu
             window.refresh() #this is super important. Text will not update without a refresh
         elif event == "File Input": #calls our file input popup to ask user for custom filename
             fileName = sg.popup_get_file('', no_window=True,file_types=(("Comma Separated Files", "*.csv"),)) #simplified way to get file, using native file popup. Much better for installations
-            if not(path.exists(fileName)): #checks that file exists. Prevents bugs that might pass the dialog
-                notify("Error: File not found! Ensure the file is in this directory.")
-            else:  #runs code if validation passes
+            if (path.exists(fileName)): #runs code if the file exists. If it does not exist, the user exited the program or there is a OS error
                 nameOnly = path.basename(fileName)
                 window['text'].update("Import data, using " + nameOnly) #updates text
                 window.refresh() #really, don't forget this!
@@ -138,7 +136,7 @@ def analyzeWindowModule(): #function that creates analyze window that calls anal
     layout = [
                 [sg.Image('logo.png')],
                 [sg.Text("You may import search terms directly, via a comma separated .txt file,\nor use the search module",justification='center',size=(60,None))], #\n in a string makes a new line
-                [sg.Button("Direct Input"),sg.Button("File Input"),sg.Button("Search Module")],
+                [sg.Button("Direct Input"), sg.Button("File Input"), sg.Button("Search Module")],
                 [sg.Button("Main Menu"),sg.Button("Cancel")]
               ]
 
@@ -157,7 +155,9 @@ def analyzeWindowModule(): #function that creates analyze window that calls anal
             break
         elif event == "Direct Input": #handles direct text input
             keywords = keywordsPopup() #prompts user with custom popup
-            if re.match('Enter keywords',keywords): #ensures that user entered something
+            if keywords is None: #if user canceled, do nothing
+                pass
+            elif re.match('Enter keywords',keywords): #ensures that user entered something
                 notify("No keywords provided. Please try again.")
             else:
                 keywords = keywords.replace('\n','') #remove those pesky newline chars
@@ -168,9 +168,7 @@ def analyzeWindowModule(): #function that creates analyze window that calls anal
 
         elif event == "File Input": #handles text file input
             fileName = sg.popup_get_file('', no_window=True,file_types=(("Text Files", "*.txt"),))
-            if not(path.exists(fileName)): #checks that file exists. Prevents bugs that might pass the dialog
-                notify("Error: File not found! Ensure the file is in this directory.")
-            else:  #runs code if validation passes
+            if (path.exists(fileName)): #runs code if the file exists. If it does not exist, the user exited the program or there is a OS error
                 file = open(fileName,'r') #opens specified text file
                 keywords = file.read() #assigns contents to keywords variable
                 file.close() #closes text file
@@ -248,7 +246,7 @@ def keywordsPopup(): #prompts user for keywords
         event, values = window.read()
         if event == "Cancel" or event == sg.WIN_CLOSED:
             window.close()
-            return "Null" #break would cause errors here, since we need the module to return a value
+            return None #break would cause errors here, since we need the module to return a value
         elif event == "OK":
             keywords = str(values['keywords'])
             window.close()
